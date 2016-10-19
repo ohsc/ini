@@ -286,16 +286,22 @@ func (f *File) parse(reader io.Reader) (err error) {
 		kname, offset, err := readKeyName(line)
 		if err != nil {
 			// Treat as boolean key when desired, and whole line is key name.
-			if IsErrDelimiterNotFound(err) && f.options.AllowBooleanKeys {
-				key, err := section.NewKey(string(line), "true")
-				if err != nil {
-					return err
+			if IsErrDelimiterNotFound(err) {
+				if f.options.AllowNonKeyValues {
+					section.AppendNonKeyValue(string(line))
+					continue
+				}	else if f.options.AllowBooleanKeys {
+					key, err := section.NewKey(string(line), "true")
+					if err != nil {
+						return err
+					}
+					key.isBooleanType = true
+					key.Comment = strings.TrimSpace(p.comment.String())
+					p.comment.Reset()
+					continue
 				}
-				key.isBooleanType = true
-				key.Comment = strings.TrimSpace(p.comment.String())
-				p.comment.Reset()
-				continue
 			}
+			
 			return err
 		}
 

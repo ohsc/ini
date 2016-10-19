@@ -105,6 +105,14 @@ lots_of_lines = 1 \
 	4 \
 `
 
+const _NONKEY_VALUE_DATA = `
+[Rules]
+Leave,Beijing,Accept
+Leave,Shanghai,Reject
+Arrive,Nanjing,Reject
+Arrive,Hangezhou,Reject
+`
+
 func Test_Load(t *testing.T) {
 	Convey("Load from data sources", t, func() {
 
@@ -208,6 +216,17 @@ key2`))
 		So(buf.String(), ShouldEqual, `key1 = hello
 key2
 `)
+	})
+
+	Convey("Load with nonkeyvalue", t, func() {
+		cfg, err := LoadSources(LoadOptions{AllowNonKeyValues: true}, []byte(_NONKEY_VALUE_DATA))
+		So(err, ShouldBeNil)
+		So(cfg, ShouldNotBeNil)
+
+		list := cfg.Section("Rules").GetNonKeyValueList()
+		So(list, ShouldNotBeEmpty)
+		So(len(list), ShouldEqual, 4)
+
 	})
 }
 

@@ -28,10 +28,11 @@ type Section struct {
 	keys     map[string]*Key
 	keyList  []string
 	keysHash map[string]string
+	nonKeyValueList []string
 }
 
 func newSection(f *File, name string) *Section {
-	return &Section{f, "", name, make(map[string]*Key), make([]string, 0, 10), make(map[string]string)}
+	return &Section{f, "", name, make(map[string]*Key), make([]string, 0, 10), make(map[string]string),make([]string, 0, 0)}
 }
 
 // Name returns name of Section.
@@ -203,4 +204,14 @@ func (s *Section) DeleteKey(name string) {
 			return
 		}
 	}
+}
+
+// Add value which unknown key into NonKeyValueList
+func (s *Section) AppendNonKeyValue(value string) {
+	s.nonKeyValueList = append(s.nonKeyValueList, value)
+}
+
+// Get whole NonKeyValueList
+func (s *Section) GetNonKeyValueList() ([]string)  {
+	return s.nonKeyValueList
 }

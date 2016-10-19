@@ -164,6 +164,10 @@ type LoadOptions struct {
 	// AllowBooleanKeys indicates whether to allow boolean type keys or treat as value is missing.
 	// This type of keys are mostly used in my.cnf.
 	AllowBooleanKeys bool
+	// AllowNonKeyValues indicates whether to allow the values without keys.
+	// To get value list you should define 'NonKeyValues []string' in your struct.
+	// Enable this option with disable AllowBooleanKeys automatically.
+	AllowNonKeyValues bool
 }
 
 func LoadSources(opts LoadOptions, source interface{}, others ...interface{}) (_ *File, err error) {
